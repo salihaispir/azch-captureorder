@@ -86,14 +86,14 @@ stages:
               imagePullSecrets: | # this automatically injects the imagePullSecret into your Kubernetes deployment configuration
                 acr-auth
               containers: |
-                aksworkshopsalihaacr.azurecr.io/captureorder:$(tag)
+                $(imageRepository):$(tag)
 
           - task: KubernetesManifest@0
             displayName: Patch the deployment environment variables
             inputs:
               action: patch
               resourceToPatch: name
-              name: aksworkshopsalihaacr.azurecr.io/captureorder 
+              name: $(imageRepository) 
               kind: Deployment
               namespace: $(k8sNamespace)
-              patch: '{"spec": {"template": {"spec":{"containers":[{"name":"aksworkshopsalihaacr.azurecr.io/captureorder","env":[{"name":"TEAMNAME","value":"$(teamName)"}]}]}}}}' # replacing TEAMNAME with the value specified in the variables
+              patch: '{"spec": {"template": {"spec":{"containers":[{"name":"$(imageRepository)","env":[{"name":"TEAMNAME","value":"$(teamName)"}]}]}}}}' # replacing TEAMNAME with the value specified in the variables
